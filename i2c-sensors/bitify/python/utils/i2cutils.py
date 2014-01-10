@@ -1,5 +1,18 @@
 #!/usr/bin/python
 
+def i2c_raspberry_pi_bus_number():
+    """Returns Raspberry Pi I2C bus number (integer, 0 or 1).
+
+    Looks at `/proc/cpuinfo` to identify if this is a revised model
+    of the Raspberry Pi (with 512MB of RAM) using `/dev/i2c-1`, or
+    the original version (with 256MB or RAM) using `/dev/i2c-0`.
+    """
+    with open('/proc/cpuinfo','r') as f:
+        for line in f:
+            if line.startswith('Revision'):
+                return 1 # All revised models use I2C bus 1
+    return 0 # The original model used I2C bus 0
+
 def i2c_read_byte(bus, address, register):
     return bus.read_byte_data(address, register)
  
