@@ -1,5 +1,6 @@
 import math
 import time
+import smbus
 
 import bitify.python.utils.i2cutils as I2CUtils
 
@@ -62,7 +63,7 @@ class ADXL345(object):
         data_format = 1 << 3 | afs_scale
         I2CUtils.i2c_write_byte(self.bus, self.address,ADXL345.DATA_FORMAT, data_format)
 
-        # Disable FIFIO mode
+        # Disable FIFO mode
         I2CUtils.i2c_write_byte(self.bus, self.address,ADXL345.FIFO_CTL, 0b00000000)
            
     def read_raw_data(self):
@@ -72,9 +73,9 @@ class ADXL345(object):
         self.accel_raw_y = I2CUtils.twos_compliment(self.raw_accel_data[ADXL345.ACCEL_YOUT_H], self.raw_accel_data[ADXL345.ACCEL_YOUT_L])
         self.accel_raw_z = I2CUtils.twos_compliment(self.raw_accel_data[ADXL345.ACCEL_ZOUT_H], self.raw_accel_data[ADXL345.ACCEL_ZOUT_L])
 
-        self.accel_scaled_x = self.accel_raw_x / ADXL345.ACCEL_SCALE
-        self.accel_scaled_y = self.accel_raw_y / ADXL345.ACCEL_SCALE
-        self.accel_scaled_z = self.accel_raw_z / ADXL345.ACCEL_SCALE
+        self.accel_scaled_x = self.accel_raw_x * ADXL345.ACCEL_SCALE
+        self.accel_scaled_y = self.accel_raw_y * ADXL345.ACCEL_SCALE
+        self.accel_scaled_z = self.accel_raw_z * ADXL345.ACCEL_SCALE
         
     def distance(self, x, y):
         '''Returns the distance between two point in 2d space'''
@@ -127,3 +128,10 @@ class ADXL345(object):
         z = self.read_scaled_accel_z()
         return self.read_y_rotation(x, y, z)
 
+if __name__ == "__main__":
+    bus = smbus.SMBus(I2CUtils.i2c_raspberry_pi_bus_number())
+    adxl345=ADXL345(bus, 0x53, "accel")
+    adxl345.read_raw_data()
+    print adxl345.read_scaled_accel_x()
+    print adxl345.read_scaled_accel_y()
+    print adxl345.read_scaled_accel_z()
