@@ -1,4 +1,7 @@
+import bitify.python.utils.i2cutils as I2CUtils
 
+import smbus
+import time
 
 class BMP085(object):
     '''
@@ -17,38 +20,56 @@ class BMP085(object):
         self.address = address
         self.name = name
         
-        self.calibration = bus.read_i2c_block_data(address, CALIB_BLOCK_ADDRESS, CALIB_BLOCK_SIZE)
+        self.calibration = I2CUtils.i2c_read_block(bus, address, BMP085.CALIB_BLOCK_ADDRESS, BMP085.CALIB_BLOCK_SIZE)
         self.oss = oss
         self.temp_wait_period = 0.004
         self.pressure_wait_period = 0.0255  # Conversion time
 
+    def twos_compliment(self, val):
+        if (val >= 0x8000):
+            return -((0xffff - val) + 1)
+        else:
+            return val
 
-    def get_word(array, index, twos):
+    def get_word(self, array, index, twos):
         val = (array[index] << 8) + array[index + 1]
         if twos:
-            return twos_compliment(val)
+            return self.twos_compliment(val)
         else:
             return val        
             
-    def calculate():
+    def calculate(self):
         
         # The sensor has a block of factory set calibration values we need to read
         # these are then used in a length calculation to get the temperature and pressure
         # copy these into convenience variables
-        ac1 = get_word(calibration, 0, True)
-        ac2 = get_word(calibration, 2, True)
-        ac3 = get_word(calibration, 4, True)
-        ac4 = get_word(calibration, 6, False)
-        ac5 = get_word(calibration, 8, False)
-        ac6 = get_word(calibration, 10, False)
-        b1 = get_word(calibration, 12, True)
-        b2 = get_word(calibration, 14, True)
-        mb = get_word(calibration, 16, True)
-        mc = get_word(calibration, 18, True)
-        md = get_word(calibration, 20, True)
+        ac1 = self.get_word(self.calibration, 0, True)
+        ac2 = self.get_word(self.calibration, 2, True)
+        ac3 = self.get_word(self.calibration, 4, True)
+        ac4 = self.get_word(self.calibration, 6, False)
+        ac5 = self.get_word(self.calibration, 8, False)
+        ac6 = self.get_word(self.calibration, 10, False)
+        b1 = self.get_word(self.calibration, 12, True)
+        b2 = self.get_word(self.calibration, 14, True)
+        mb = self.get_word(self.calibration, 16, True)
+        mc = self.get_word(self.calibration, 18, True)
+        md = self.get_word(self.calibration, 20, True)
+        oss = self.oss
         
         # This code is a direct translation from the datasheet
         # and should be optimised for real world use
+        
+        # Read raw temperature
+        I2CUtils.i2c_write_byte(self.bus, self.address, 0xF4, 0x2E)  # Tell the sensor to take a temperature reading
+        time.sleep(self.temp_wait_period)  # Wait for the conversion to take place
+        temp_raw = I2CUtils.i2c_read_word_signed(self.bus, self.address, 0xF6)
+        
+        I2CUtils.i2c_write_byte(self.bus, self.address, 0xF4, 0x34 + (self.oss << 6))  # Tell the sensor to take a pressure reading
+        time.sleep(self.pressure_wait_period)  # Wait for the conversion to take place
+        pressure_raw = ((I2CUtils.i2c_read_byte(self.bus, self.address, 0xF6) << 16) \
+                     + (I2CUtils.i2c_read_byte(self.bus, self.address, 0xF7) << 8) \
+                     + (I2CUtils.i2c_read_byte(self.bus, self.address, 0xF8))) >> (8 - self.oss)
+        
         
         # Calculate temperature
         x1 = ((temp_raw - ac6) * ac5) / 32768
@@ -76,8 +97,23 @@ class BMP085(object):
         x1 = (x1 * 3038) >> 16
         x2 = (-7357 * p) >> 16
         p = p + ((x1 + x2 + 3791) >> 4)
-        return(t, p)
+        return(t / 10., p / 100.)
 
-
+    def read_pressure(self):
+        (temperature, pressure) = self.calculate()
+        return pressure 
+    
+    def read_temperature(self):
+        (temperature, pressure) = self.calculate()
+        return temperature 
+    
+    def read_temperature_and_pressure(self):
+        return self.calculate()
+        
+if __name__ == "__main__":
+    bus = smbus.SMBus(I2CUtils.i2c_raspberry_pi_bus_number())
+    bmp085 = BMP085(bus, 0x77 , "BMP085")
+    print bmp085.read_temperature_and_pressure()
+    
 
 

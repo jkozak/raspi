@@ -10,7 +10,7 @@ urls = (
     '/', 'index'
 )
 
-bus = smbus.SMBus(0)
+bus = smbus.SMBus(i2c_raspberry_pi_bus_number)
 imu_controller = imu.IMU(bus, 0x69, 0x53, 0x1e, "IMU")
 
 imu_controller.set_compass_offsets(9, -10, -140)

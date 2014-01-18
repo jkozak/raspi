@@ -1,3 +1,3 @@
 #!/bin/bash
-export PYTHONPATH=.:$PYTHONPATH
+export PYTHONPATH=`PWD`
 python ./bitify/python/web/server.py
