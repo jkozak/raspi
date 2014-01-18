@@ -10,7 +10,7 @@ urls = (
 )
 
 bus = smbus.SMBus(0)
-imu_controller = imu.IMU(bus, 0x68, 0x1e, "IMU")
+imu_controller = imu.IMU(bus, 0x69, 0x1e, "IMU")
 imu_controller.set_compass_offsets(9, -10, -140)
 
 app = web.application(urls, globals())

@@ -67,16 +67,10 @@ class L3G4200D(object):
         self.gyro_raw_y = I2CUtils.i2c_read_word_signed(self.bus, self.address, L3G4200D.GYRO_YOUT_H)
         self.gyro_raw_z = I2CUtils.i2c_read_word_signed(self.bus, self.address, L3G4200D.GYRO_ZOUT_H)
 
-        # print self.gyro_raw_x, self.gyro_raw_y, self.gyro_raw_z, "...", L3G4200D.GYRO_SCALE[self.fs_scale][0]
-
         # We convert these to radians for consistency and so we can easily combine later in the filter
         self.gyro_scaled_x = math.radians(self.gyro_raw_x * L3G4200D.GYRO_SCALE[self.fs_scale][0]) 
         self.gyro_scaled_y = math.radians(self.gyro_raw_y * L3G4200D.GYRO_SCALE[self.fs_scale][0]) 
         self.gyro_scaled_z = math.radians(self.gyro_raw_z * L3G4200D.GYRO_SCALE[self.fs_scale][0]) 
-
-        #self.gyro_scaled_x = (self.gyro_raw_x * L3G4200D.GYRO_SCALE[self.fs_scale][0]) 
-        #self.gyro_scaled_y = (self.gyro_raw_y * L3G4200D.GYRO_SCALE[self.fs_scale][0]) 
-        #self.gyro_scaled_z = (self.gyro_raw_z * L3G4200D.GYRO_SCALE[self.fs_scale][0])
 
     def read_raw_gyro_x(self):
         '''Return the RAW X gyro value'''
