@@ -3,7 +3,7 @@ import time
 from bitify.python.sensors.mpu6050 import MPU6050
 from bitify.python.sensors.hmc5883l import HMC5883L
 
-class IMU(object):
+class OLDIMU(object):
     
     K = 0.98
     K1 = 1 - K

@@ -4,13 +4,15 @@ import web  # web.py
 import smbus
 
 import bitify.python.sensors.imu as imu
+from bitify.python.utils.i2cutils import i2c_raspberry_pi_bus_number
 
 urls = (
     '/', 'index'
 )
 
 bus = smbus.SMBus(0)
-imu_controller = imu.IMU(bus, 0x69, 0x1e, "IMU")
+imu_controller = imu.IMU(bus, 0x69, 0x53, 0x1e, "IMU")
+
 imu_controller.set_compass_offsets(9, -10, -140)
 
 app = web.application(urls, globals())

@@ -3,9 +3,11 @@ import smbus
 import time
 import math
 
-bus = smbus.SMBus(0)
-address = 0x1e
+#Local import
+from i2cutils import i2c_raspberry_pi_bus_number
 
+bus = smbus.SMBus(i2c_raspberry_pi_bus_number())
+address = 0x1e
 
 def read_byte(adr):
     return bus.read_byte_data(address, adr)
