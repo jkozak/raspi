@@ -61,9 +61,9 @@ class HMC5883L(object):
         self.raw_data = [0, 0, 0, 0, 0, 0]
         
         # Now read all the values as the first read after a gain change returns the old value
-        self.__read_raw_data()
+        self.read_raw_data()
     
-    def __read_raw_data(self):
+    def read_raw_data(self):
         '''
         Read the raw data from the sensor, scale it appropriately and store for later use
         '''
@@ -80,7 +80,7 @@ class HMC5883L(object):
         '''
         Read a bearing from the sensor assuming the sensor is level
         '''
-        self.__read_raw_data()
+        self.read_raw_data()
 
         bearing = math.atan2(self.read_scaled_y(), self.read_scaled_x())
         if bearing < 0:
@@ -92,7 +92,7 @@ class HMC5883L(object):
         '''
         Calculate a bearing taking in to account the current pitch and roll of the device as supplied as parameters
         '''
-        self.__read_raw_data()
+        self.read_raw_data()
         cos_pitch = (math.cos(pitch))
         sin_pitch = (math.sin(pitch))
         
