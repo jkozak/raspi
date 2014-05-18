@@ -1,4 +1,38 @@
-/.project
-/.pydevproject
-*.pyc
+Debug/
+Release/
 .metadata/
+.settings/
+RemoteSystemsTempFiles/
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+*.pyc
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+*.eep
+*.sym
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.bin
+
+Others
+*.lss
+*.map
+*.d
