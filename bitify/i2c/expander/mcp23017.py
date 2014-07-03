@@ -1,7 +1,8 @@
 import time
 import smbus
 
-import bitify.python.utils.i2cutils as I2CUtils
+import bitify.i2c.utils.i2cutils as I2CUtils
+
 
 class MCP23017(object):
     IODIRA = 0x00

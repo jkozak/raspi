@@ -3,8 +3,8 @@
 import web  # web.py
 import smbus
 
-import bitify.python.sensors.imu as imu
-from bitify.python.utils.i2cutils import i2c_raspberry_pi_bus_number
+import bitify.i2c.sensors.imu as imu
+from bitify.i2c.utils.i2cutils import i2c_raspberry_pi_bus_number
 
 urls = (
     '/', 'index'

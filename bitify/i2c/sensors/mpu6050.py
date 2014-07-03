@@ -1,6 +1,6 @@
 import math
 
-import bitify.python.utils.i2cutils as I2CUtils
+import bitify.i2c.utils.i2cutils as I2CUtils
 
 class MPU6050(object):
     '''

@@ -1,8 +1,8 @@
 import time
 
-from bitify.python.sensors.adxl345 import ADXL345
-from bitify.python.sensors.l3g4200d import L3G4200D
-from bitify.python.sensors.hmc5883l import HMC5883L
+from bitify.i2c.sensors.adxl345 import ADXL345
+from bitify.i2c.sensors.l3g4200d import L3G4200D
+from bitify.i2c.sensors.hmc5883l import HMC5883L
 
 class IMU(object):
     
