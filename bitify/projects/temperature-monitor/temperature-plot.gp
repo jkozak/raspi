@@ -19,6 +19,6 @@ set xdata time
 set timefmt "%Y-%m-%d-%H:%M:%S"
 set format x "%H:%M:%S"
 
-plot filename using 1:($2/1000) title "temp" w l, \
-     filename using 1:($2/1000) title "temp smoothed" smooth sbezier
+plot filename using 1:($2/1000) title "Temperature" w l, \
+     filename using 1:($2/1000) title "Temperature (smoothed)" smooth sbezier
 	 
