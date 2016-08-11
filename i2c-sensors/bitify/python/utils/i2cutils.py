@@ -11,12 +11,12 @@ def i2c_raspberry_pi_bus_number():
     with open('/proc/cpuinfo','r') as f:
         for line in f:
             if line.startswith('Revision'):
-                cpuinfo = line.strip()[-1:]
-    return (1 if (cpuinfo >'3') else 0)
-    
+                cpuinfo = int(line.strip().split(' ')[1],16)
+    return (1 if (cpuinfo>3) else 0)
+
 def i2c_read_byte(bus, address, register):
     return bus.read_byte_data(address, register)
- 
+
 def i2c_read_word_unsigned(bus, address, register):
     high = bus.read_byte_data(address, register)
     low = bus.read_byte_data(address, register+1)
@@ -41,6 +41,6 @@ def twos_compliment(high_byte, low_byte):
         return -((0xffff - value) + 1)
     else:
         return value
-        
+
 if __name__ == "__main__":
     print i2c_raspberry_pi_bus_number()
